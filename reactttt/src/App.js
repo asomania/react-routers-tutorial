@@ -1,24 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { useNavigate, Route, Routes } from "react-router-dom";
+import MyComponent from "./components/MyComponent";
 
 function App() {
+  const [language, setLanguage] = useState("en"); // varsayılan olarak İngilizce seçili
+  const navigate = useNavigate();
+
+  const handleLanguageChange = (languageCode) => {
+    setLanguage(languageCode);
+    navigate(`/${languageCode}`);
+  };
+
+  const words = {
+    en: ["Welcome!", "This is an English page."],
+    tr: ["Hoşgeldiniz!", "Bu bir Türkçe sayfa."],
+    rus: ["Добро пожаловать!", "Это страница на русском языке."],
+    fr: ["Bienvenue!", "Ceci est une page en français."],
+  };
+
+  const [greeting, pageMessage] = words[language];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <button onClick={() => handleLanguageChange("en")}>English</button>
+      <button onClick={() => handleLanguageChange("tr")}>Türkçe</button>
+      <button onClick={() => handleLanguageChange("rus")}>Русский</button>
+      <button onClick={() => handleLanguageChange("fr")}>Français</button>
+      <p>{greeting}</p>
+      <p>{pageMessage}</p>
+      <Routes>
+        <Route
+          exact
+          path="/:lang"
+          component={({ match }) => (
+            <MyComponent words={words[match.params.lang]} />
+          )}
+        />
+      </Routes>
+    </>
   );
 }
 
